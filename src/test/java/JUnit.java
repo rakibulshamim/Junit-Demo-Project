@@ -10,9 +10,13 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class JUnit {
 
@@ -82,8 +86,101 @@ public class JUnit {
         actions.contextClick(list.get(2)).perform();
         actions.click(list.get(3)).perform();
     }
+    @Test
+    public void handleAlert() throws InterruptedException {
+        driver.get("https://demoqa.com/alerts");
+        driver.findElement(By.id("alertButton")).click();
+        driver.switchTo().alert().accept();
+
+        driver.findElement(By.id("timerAlertButton")).click();
+        Thread.sleep(5000);
+        driver.switchTo().alert().accept();
+
+        driver.findElement(By.id("confirmButton")).click();
+        driver.switchTo().alert().dismiss();
+
+        driver.findElement(By.id(("promtButton"))).click();
+        driver.switchTo().alert().sendKeys("Shamim");
+        driver.switchTo().alert().accept();
+        String text= driver.findElement(By.id("promptResult")).getText();
+        Assert.assertTrue(text.contains("Shamim"));
+    }
+    @Test
+    public void selectDate(){
+        driver.get("https://demoqa.com/date-picker");
+        driver.findElement(By.id("datePickerMonthYearInput")).sendKeys(Keys.chord(Keys.CONTROL,"a",Keys.DELETE));
+        driver.findElement(By.id("datePickerMonthYearInput")).sendKeys("02/02/2002");
+        driver.findElement(By.id("datePickerMonthYearInput")).sendKeys(Keys.ENTER);
+    }
+    @Test
+    public void selectDropdown(){
+        driver.get("https://demoqa.com/select-menu");
+        Select color = new Select(driver.findElement(By.id("oldSelectMenu")));
+        color.selectByValue("2");
+        Select cars=new Select(driver.findElement(By.id("cars")));
+        if (cars.isMultiple()) {
+            cars.selectByValue("volvo");
+            cars.selectByValue("audi");
+        }
+    }
+    @Test
+    public void handleNewTab(){
+        driver.get("https://demoqa.com/links");
+        driver.findElement(By.id("simpleLink")).click();
+        ArrayList<String> w = new ArrayList<String>(driver.getWindowHandles());
+        //switch to open tab
+        driver.switchTo().window(w.get(1));
+        String title = driver.getTitle();
+        System.out.println("New tab title: " + driver.getTitle());
+        Boolean status = driver.findElement(By.xpath("//img[@src='/images/Toolsqa.jpg']")).isDisplayed();
+        Assert.assertEquals(true,status);
+        driver.close();
+        driver.switchTo().window(w.get(0));
+    }
+    @Test
+    public void handleChildWindow() {
+        driver.get("https://demoqa.com/browser-windows");
+        wait = new WebDriverWait(driver, Duration.ofSeconds(40));
+        WebElement button = wait.until(ExpectedConditions.elementToBeClickable(By.id("windowButton")));
+        button.click();
+        String mainWindowHandle = driver.getWindowHandle();
+        Set<String> allWindowHandles = driver.getWindowHandles();
+        Iterator<String> iterator = allWindowHandles.iterator();
+
+        while (iterator.hasNext()) {
+            String ChildWindow = iterator.next();
+            if (!mainWindowHandle.equalsIgnoreCase(ChildWindow)) {
+                driver.switchTo().window(ChildWindow);
+                String text = driver.findElement(By.id("sampleHeading")).getText();
+                Assert.assertTrue(text.contains("This is a sample page"));
+                driver.close();
+            }
+        }
+    }
+    @Test
+    public void modalDialog() throws InterruptedException {
+        driver.get("https://demoqa.com/modal-dialogs");
+        driver.findElement(By.id("showSmallModal")).click();
+        Thread.sleep(1000);
+        driver.findElement(By.id("closeSmallModal")).click();
+
+        driver.findElement(By.id("showLargeModal")).click();
+        Thread.sleep(1000);
+        driver.findElement(By.id("closeLargeModal")).click();
+    }
+    @Test
+    public void webTables(){
+        driver.get("https://demoqa.com/webtables");
+        driver.findElement(By.xpath("//span[@id='edit-record-2']//*[@stroke='currentColor']")).click();
+        driver.findElement(By.id("firstName")).clear();
+        driver.findElement(By.id("firstName")).sendKeys("Shamim");
+        driver.findElement(By.id("age")).clear();
+        driver.findElement(By.id("age")).sendKeys("25");
+        driver.findElement(By.id("submit")).click();
+    }
     @After
     public void closeBrowser(){
         //driver.quit();
+        //driver.close();
     }
 }
