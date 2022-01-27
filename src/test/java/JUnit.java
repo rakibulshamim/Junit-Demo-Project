@@ -1,22 +1,21 @@
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class JUnit {
 
@@ -177,6 +176,46 @@ public class JUnit {
         driver.findElement(By.id("age")).clear();
         driver.findElement(By.id("age")).sendKeys("25");
         driver.findElement(By.id("submit")).click();
+    }
+    @Test
+    public void scrapData(){
+        driver.get("https://demoqa.com/webtables");
+        WebElement table = driver.findElement(By.className("rt-tbody"));
+        List<WebElement> allRows = table.findElements(By.className("rt-tr"));
+        int i=0;
+        for (WebElement row : allRows) {
+            List<WebElement> cells = row.findElements(By.className("rt-td"));
+            for (WebElement cell : cells) {
+                i++;
+                System.out.println("num["+i+"] "+ cell.getText());
+            }
+        }
+    }
+    @Test
+    public void takeScreenShot() throws IOException {
+        driver.get("https://demoqa.com");
+        File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        String time = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss-aa").format(new Date());
+        String fileWithPath = "./src/test/resources/screenshots/" + time + ".png";
+        File DestFile = new File(fileWithPath);
+        FileUtils.copyFile(screenshotFile, DestFile);
+    }
+    @Test
+    public void uploadImage(){
+        driver.get("https://demoqa.com/upload-download");
+        WebElement uploadElement = driver.findElement(By.id("uploadFile"));
+        uploadElement.sendKeys("D:\\HD.jpg");
+        String text= driver.findElement(By.id("uploadedFilePath")).getText();
+        Assert.assertTrue(text.contains("HD.jpg"));
+    }
+    @Test
+    public void handleIframe(){
+        driver.get("https://demoqa.com/frames");
+        driver.switchTo().frame("frame2");
+        String text= driver.findElement(By.id("sampleHeading")).getText();
+        System.out.println(text);
+        Assert.assertTrue(text.contains("This is a sample page"));
+        driver.switchTo().defaultContent();
     }
     @After
     public void closeBrowser(){
