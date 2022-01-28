@@ -1,4 +1,9 @@
 import org.apache.commons.io.FileUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,6 +17,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -112,8 +118,11 @@ public class JUnit {
         driver.findElement(By.id("datePickerMonthYearInput")).sendKeys(Keys.ENTER);
     }
     @Test
-    public void selectDropdown(){
+    public void selectDropdown() throws InterruptedException {
         driver.get("https://demoqa.com/select-menu");
+//        List<WebElement> group = driver.findElements(By.xpath("//div[contains(@class,'css-1hwfws3')]"));
+//        Actions actions = new Actions(driver);
+//        actions.click(group.get(0)).perform();
         Select color = new Select(driver.findElement(By.id("oldSelectMenu")));
         color.selectByValue("2");
         Select cars=new Select(driver.findElement(By.id("cars")));
@@ -192,15 +201,6 @@ public class JUnit {
         }
     }
     @Test
-    public void takeScreenShot() throws IOException {
-        driver.get("https://demoqa.com");
-        File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-        String time = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss-aa").format(new Date());
-        String fileWithPath = "./src/test/resources/screenshots/" + time + ".png";
-        File DestFile = new File(fileWithPath);
-        FileUtils.copyFile(screenshotFile, DestFile);
-    }
-    @Test
     public void uploadImage(){
         driver.get("https://demoqa.com/upload-download");
         WebElement uploadElement = driver.findElement(By.id("uploadFile"));
@@ -217,9 +217,67 @@ public class JUnit {
         Assert.assertTrue(text.contains("This is a sample page"));
         driver.switchTo().defaultContent();
     }
+    @Test
+    public void mouseHover() throws InterruptedException {
+        driver.get("https://www.aiub.edu/");
+        WebElement menuAboutElement = driver.findElement(By.xpath("//a[@href='/about']"));
+        Actions actions = new Actions(driver);
+        actions.moveToElement(menuAboutElement).perform();
+        Thread.sleep(2000);
+        WebElement subMenu = driver.findElement(By.xpath("//a[@href='/about/Information']"));
+        actions.moveToElement(subMenu);
+        actions.click().build().perform();
+    }
+    @Test
+    public void keyboardEvents() throws InterruptedException {
+        driver.get("https://www.google.com/");
+        WebElement searchElement = driver.findElement(By.name("q"));
+        Actions action = new Actions(driver);
+        action.moveToElement(searchElement);
+        action.keyDown(Keys.SHIFT);
+        action.sendKeys("Selenium Webdriver")
+                .keyUp(Keys.SHIFT)
+                .doubleClick()
+                .contextClick()
+                .perform();
+
+        Thread.sleep(5000);
+    }
+    @Test
+    public void takeScreenShot() throws IOException {
+        driver.get("https://demoqa.com");
+        File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        String time = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss-aa").format(new Date());
+        String fileWithPath = "./src/test/resources/screenshots/" + time + ".png";
+        File DestFile = new File(fileWithPath);
+        FileUtils.copyFile(screenshotFile, DestFile);
+    }
+    public static void readFromExcel(String filePath,String fileName,String sheetName) throws IOException {
+        File file =    new File(filePath+"\\"+fileName);
+        FileInputStream inputStream = new FileInputStream(file);
+        Workbook workbook = null;
+        String fileExtensionName = fileName.substring(fileName.indexOf("."));
+        if(fileExtensionName.equals(".xls")){
+            workbook = new HSSFWorkbook(inputStream);
+        }
+        Sheet sheet = workbook.getSheet(sheetName);
+        int rowCount = sheet.getLastRowNum()-sheet.getFirstRowNum();
+        for (int i = 0; i < rowCount+1; i++) {
+            Row row = sheet.getRow(i);
+            for (int j = 0; j < row.getLastCellNum(); j++) {
+                DataFormatter formatter = new DataFormatter();
+                System.out.println(formatter.formatCellValue((row.getCell(j))));
+            }
+            System.out.println();
+        }
+    }
+    @Test
+    public void readData() throws IOException {
+        readFromExcel("D:\\","Book1.xls","Sheet1");
+    }
     @After
     public void closeBrowser(){
-        //driver.quit();
+        driver.quit();
         //driver.close();
     }
 }
