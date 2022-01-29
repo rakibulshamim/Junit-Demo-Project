@@ -23,6 +23,8 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.*;
 
+import static org.openqa.selenium.By.*;
+
 public class JUnit {
 
     WebDriver driver;
@@ -36,7 +38,6 @@ public class JUnit {
         driver=new ChromeDriver(chromeOptions);
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-
     }
     @Test
     public void getTitle(){
@@ -49,34 +50,34 @@ public class JUnit {
     public void checkIfElementExists(){
         driver.get("https://demoqa.com");
         wait=new WebDriverWait(driver, Duration.ofSeconds(40));
-        WebElement imgElement = wait.until(ExpectedConditions.elementToBeClickable(By.className("banner-image")));
+        WebElement imgElement = wait.until(ExpectedConditions.elementToBeClickable(className("banner-image")));
         boolean status = imgElement.isDisplayed();
         Assert.assertTrue(status);
     }
     @Test
     public void fillupForm(){
         driver.get("https://demoqa.com/text-box");
-        driver.findElement(By.id("userName")).sendKeys("Shamim");
-        driver.findElement(By.id("userEmail")).sendKeys("shamim@test.com");
-        driver.findElement(By.id("currentAddress")).sendKeys("Dhaka");
-        driver.findElement(By.id("permanentAddress")).sendKeys("Jamalpur");
-        driver.findElement(By.id("submit")).sendKeys(Keys.ENTER);
+        driver.findElement(id("userName")).sendKeys("Shamim");
+        driver.findElement(id("userEmail")).sendKeys("shamim@test.com");
+        driver.findElement(id("currentAddress")).sendKeys("Dhaka");
+        driver.findElement(id("permanentAddress")).sendKeys("Jamalpur");
+        driver.findElement(id("submit")).sendKeys(Keys.ENTER);
     }
     @Test
     public void clickButton(){
         driver.get("https://demoqa.com/buttons");
-        WebElement doubleClickBtnElement = driver.findElement(By.id("doubleClickBtn"));
-        WebElement rightClickBtnElement = driver.findElement(By.id("rightClickBtn"));
-        List<WebElement> ClickBtnElement = driver.findElements(By.tagName("button"));
+        WebElement doubleClickBtnElement = driver.findElement(id("doubleClickBtn"));
+        WebElement rightClickBtnElement = driver.findElement(id("rightClickBtn"));
+        List<WebElement> ClickBtnElement = driver.findElements(tagName("button"));
 
         Actions actions = new Actions(driver);
         actions.doubleClick(doubleClickBtnElement).perform();
         actions.contextClick(rightClickBtnElement).perform();
         actions.click(ClickBtnElement.get(3)).perform();
 
-        String text1 = driver.findElement(By.id("doubleClickMessage")).getText();
-        String text2 = driver.findElement(By.id("rightClickMessage")).getText();
-        String text3 = driver.findElement(By.id("dynamicClickMessage")).getText();
+        String text1 = driver.findElement(id("doubleClickMessage")).getText();
+        String text2 = driver.findElement(id("rightClickMessage")).getText();
+        String text3 = driver.findElement(id("dynamicClickMessage")).getText();
 
         Assert.assertTrue(text1.contains("You have done a double click"));
         Assert.assertTrue(text2.contains("You have done a right click"));
@@ -85,7 +86,7 @@ public class JUnit {
     @Test
     public void clickIfMultipleButtons(){
         driver.get("https://demoqa.com/buttons");
-        List<WebElement> list = driver.findElements(By.cssSelector("[type=button]"));
+        List<WebElement> list = driver.findElements(cssSelector("[type=button]"));
         Actions actions = new Actions(driver);
         actions.doubleClick(list.get(1)).perform();
         actions.contextClick(list.get(2)).perform();
@@ -94,53 +95,57 @@ public class JUnit {
     @Test
     public void handleAlert() throws InterruptedException {
         driver.get("https://demoqa.com/alerts");
-        driver.findElement(By.id("alertButton")).click();
+        driver.findElement(id("alertButton")).click();
         driver.switchTo().alert().accept();
 
-        driver.findElement(By.id("timerAlertButton")).click();
+        driver.findElement(id("timerAlertButton")).click();
         Thread.sleep(5000);
         driver.switchTo().alert().accept();
 
-        driver.findElement(By.id("confirmButton")).click();
+        driver.findElement(id("confirmButton")).click();
         driver.switchTo().alert().dismiss();
 
-        driver.findElement(By.id(("promtButton"))).click();
+        driver.findElement(id(("promtButton"))).click();
         driver.switchTo().alert().sendKeys("Shamim");
         driver.switchTo().alert().accept();
-        String text= driver.findElement(By.id("promptResult")).getText();
+        String text= driver.findElement(id("promptResult")).getText();
         Assert.assertTrue(text.contains("Shamim"));
     }
     @Test
     public void selectDate(){
         driver.get("https://demoqa.com/date-picker");
-        driver.findElement(By.id("datePickerMonthYearInput")).sendKeys(Keys.chord(Keys.CONTROL,"a",Keys.DELETE));
-        driver.findElement(By.id("datePickerMonthYearInput")).sendKeys("02/02/2002");
-        driver.findElement(By.id("datePickerMonthYearInput")).sendKeys(Keys.ENTER);
+        driver.findElement(id("datePickerMonthYearInput")).sendKeys(Keys.chord(Keys.CONTROL,"a",Keys.DELETE));
+        driver.findElement(id("datePickerMonthYearInput")).sendKeys("02/02/2002");
+        driver.findElement(id("datePickerMonthYearInput")).sendKeys(Keys.ENTER);
     }
     @Test
     public void selectDropdown() throws InterruptedException {
         driver.get("https://demoqa.com/select-menu");
-//        List<WebElement> group = driver.findElements(By.xpath("//div[contains(@class,'css-1hwfws3')]"));
-//        Actions actions = new Actions(driver);
-//        actions.click(group.get(0)).perform();
-        Select color = new Select(driver.findElement(By.id("oldSelectMenu")));
+        Select color=new Select(driver.findElement(By.id("oldSelectMenu")));
         color.selectByValue("2");
         Select cars=new Select(driver.findElement(By.id("cars")));
         if (cars.isMultiple()) {
             cars.selectByValue("volvo");
             cars.selectByValue("audi");
         }
+        wait=new WebDriverWait(driver, Duration.ofSeconds(40));
+        wait.until(ExpectedConditions.elementToBeClickable(xpath("//input[@id='react-select-2-input']"))).sendKeys("A root option");
+        wait.until(ExpectedConditions.elementToBeClickable(xpath("//div[contains(@id,'react-select')]"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(xpath("//input[@id='react-select-3-input']"))).sendKeys("Mrs.");
+        wait.until(ExpectedConditions.elementToBeClickable(xpath("//div[contains(@id,'react-select')]"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(xpath("//input[@id='react-select-4-input']")))
+                .sendKeys(Keys.chord("Green",Keys.TAB,"Blue",Keys.TAB,"Black",Keys.TAB,"Red",Keys.TAB));
     }
     @Test
     public void handleNewTab(){
         driver.get("https://demoqa.com/links");
-        driver.findElement(By.id("simpleLink")).click();
+        driver.findElement(id("simpleLink")).click();
         ArrayList<String> w = new ArrayList<String>(driver.getWindowHandles());
         //switch to open tab
         driver.switchTo().window(w.get(1));
         String title = driver.getTitle();
         System.out.println("New tab title: " + driver.getTitle());
-        Boolean status = driver.findElement(By.xpath("//img[@src='/images/Toolsqa.jpg']")).isDisplayed();
+        Boolean status = driver.findElement(xpath("//img[@src='/images/Toolsqa.jpg']")).isDisplayed();
         Assert.assertEquals(true,status);
         driver.close();
         driver.switchTo().window(w.get(0));
@@ -149,7 +154,7 @@ public class JUnit {
     public void handleChildWindow() {
         driver.get("https://demoqa.com/browser-windows");
         wait = new WebDriverWait(driver, Duration.ofSeconds(40));
-        WebElement button = wait.until(ExpectedConditions.elementToBeClickable(By.id("windowButton")));
+        WebElement button = wait.until(ExpectedConditions.elementToBeClickable(id("windowButton")));
         button.click();
         String mainWindowHandle = driver.getWindowHandle();
         Set<String> allWindowHandles = driver.getWindowHandles();
@@ -159,7 +164,7 @@ public class JUnit {
             String ChildWindow = iterator.next();
             if (!mainWindowHandle.equalsIgnoreCase(ChildWindow)) {
                 driver.switchTo().window(ChildWindow);
-                String text = driver.findElement(By.id("sampleHeading")).getText();
+                String text = driver.findElement(id("sampleHeading")).getText();
                 Assert.assertTrue(text.contains("This is a sample page"));
                 driver.close();
             }
@@ -168,32 +173,32 @@ public class JUnit {
     @Test
     public void modalDialog() throws InterruptedException {
         driver.get("https://demoqa.com/modal-dialogs");
-        driver.findElement(By.id("showSmallModal")).click();
+        driver.findElement(id("showSmallModal")).click();
         Thread.sleep(1000);
-        driver.findElement(By.id("closeSmallModal")).click();
+        driver.findElement(id("closeSmallModal")).click();
 
-        driver.findElement(By.id("showLargeModal")).click();
+        driver.findElement(id("showLargeModal")).click();
         Thread.sleep(1000);
-        driver.findElement(By.id("closeLargeModal")).click();
+        driver.findElement(id("closeLargeModal")).click();
     }
     @Test
     public void webTables(){
         driver.get("https://demoqa.com/webtables");
-        driver.findElement(By.xpath("//span[@id='edit-record-2']//*[@stroke='currentColor']")).click();
-        driver.findElement(By.id("firstName")).clear();
-        driver.findElement(By.id("firstName")).sendKeys("Shamim");
-        driver.findElement(By.id("age")).clear();
-        driver.findElement(By.id("age")).sendKeys("25");
-        driver.findElement(By.id("submit")).click();
+        driver.findElement(xpath("//span[@id='edit-record-2']//*[@stroke='currentColor']")).click();
+        driver.findElement(id("firstName")).clear();
+        driver.findElement(id("firstName")).sendKeys("Shamim");
+        driver.findElement(id("age")).clear();
+        driver.findElement(id("age")).sendKeys("25");
+        driver.findElement(id("submit")).click();
     }
     @Test
     public void scrapData(){
         driver.get("https://demoqa.com/webtables");
-        WebElement table = driver.findElement(By.className("rt-tbody"));
-        List<WebElement> allRows = table.findElements(By.className("rt-tr"));
+        WebElement table = driver.findElement(className("rt-tbody"));
+        List<WebElement> allRows = table.findElements(className("rt-tr"));
         int i=0;
         for (WebElement row : allRows) {
-            List<WebElement> cells = row.findElements(By.className("rt-td"));
+            List<WebElement> cells = row.findElements(className("rt-td"));
             for (WebElement cell : cells) {
                 i++;
                 System.out.println("num["+i+"] "+ cell.getText());
@@ -203,16 +208,16 @@ public class JUnit {
     @Test
     public void uploadImage(){
         driver.get("https://demoqa.com/upload-download");
-        WebElement uploadElement = driver.findElement(By.id("uploadFile"));
+        WebElement uploadElement = driver.findElement(id("uploadFile"));
         uploadElement.sendKeys("D:\\HD.jpg");
-        String text= driver.findElement(By.id("uploadedFilePath")).getText();
+        String text= driver.findElement(id("uploadedFilePath")).getText();
         Assert.assertTrue(text.contains("HD.jpg"));
     }
     @Test
     public void handleIframe(){
         driver.get("https://demoqa.com/frames");
         driver.switchTo().frame("frame2");
-        String text= driver.findElement(By.id("sampleHeading")).getText();
+        String text= driver.findElement(id("sampleHeading")).getText();
         System.out.println(text);
         Assert.assertTrue(text.contains("This is a sample page"));
         driver.switchTo().defaultContent();
@@ -220,18 +225,18 @@ public class JUnit {
     @Test
     public void mouseHover() throws InterruptedException {
         driver.get("https://www.aiub.edu/");
-        WebElement menuAboutElement = driver.findElement(By.xpath("//a[@href='/about']"));
+        WebElement menuAboutElement = driver.findElement(xpath("//a[@href='/about']"));
         Actions actions = new Actions(driver);
         actions.moveToElement(menuAboutElement).perform();
         Thread.sleep(2000);
-        WebElement subMenu = driver.findElement(By.xpath("//a[@href='/about/Information']"));
+        WebElement subMenu = driver.findElement(xpath("//a[@href='/about/Information']"));
         actions.moveToElement(subMenu);
         actions.click().build().perform();
     }
     @Test
     public void keyboardEvents() throws InterruptedException {
         driver.get("https://www.google.com/");
-        WebElement searchElement = driver.findElement(By.name("q"));
+        WebElement searchElement = driver.findElement(name("q"));
         Actions action = new Actions(driver);
         action.moveToElement(searchElement);
         action.keyDown(Keys.SHIFT);
