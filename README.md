@@ -52,7 +52,7 @@ gradle clean test
 - Handle multiple windows
   - Verify mini page title to ensure mini page loads correctly
 - Click on Modal
-  - Verify modal title to ensure properl modal load
+  - Verify modal title to ensure properly modal load
 - Click on web tables
   - Open table and update some data
 - Scrap data from web tables
@@ -68,7 +68,7 @@ gradle clean test
 - Take ScreenShot from webpage
   - Take a screenshot and save the image to local storage
 - Read data from Excel
-  - View all data from a excel sheet
+  - View all data from an excel sheet
 
 
 ### Reports
