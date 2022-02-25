@@ -3,21 +3,21 @@
 A testing repository using Selenium to automate the Demo QA website(https://demoqa.com) and its suite of applications.
 
 1. [Technology](#technology)
-2. [Prerequisite](#prerequisite)
+2. [Prerequisites](#prerequisites)
 3. [How to run this project](#How-to-run-this-project)
 4. [Test Plan](#test-plan)
 5. [Reports](#Reports)
 
 
 ### Technology
-- Tool: selenium
+- Tool: Selenium
 - IDE: IntelIJ
 - Build tool: Gradle
 - Language: Java
 - Framework: JUnit
 
 
-### Prerequisite
+### Prerequisites
 1. Need to install jdk 1.8 or above
 2. Need to setup JAVA_HOME and GRADLE_HOME
 
