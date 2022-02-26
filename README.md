@@ -18,8 +18,10 @@ A testing repository using Selenium to automate the Demo QA website(https://demo
 
 
 ### Prerequisites
-1. Need to install jdk 1.8 or above
-2. Need to setup JAVA_HOME and GRADLE_HOME
+* Install jdk 11 or any LTS version
+* Download and extract Gradle any latest version
+* Configure **JAVA_HOME** and **GRADLE_HOME**
+* Stable internet connection
 
 
 ### How to run this project
