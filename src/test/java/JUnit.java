@@ -1,24 +1,13 @@
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.poi.ss.usermodel.*;
+import org.junit.*;
 import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.chrome.*;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.*;
@@ -119,7 +108,7 @@ public class JUnit {
         driver.findElement(id("datePickerMonthYearInput")).sendKeys(Keys.ENTER);
     }
     @Test
-    public void selectDropdown() throws InterruptedException {
+    public void selectDropdown() {
         driver.get("https://demoqa.com/select-menu");
         Select color=new Select(driver.findElement(By.id("oldSelectMenu")));
         color.selectByValue("2");
@@ -140,7 +129,7 @@ public class JUnit {
     public void handleNewTab(){
         driver.get("https://demoqa.com/links");
         driver.findElement(id("simpleLink")).click();
-        ArrayList<String> w = new ArrayList<String>(driver.getWindowHandles());
+        ArrayList<String> w = new ArrayList<>(driver.getWindowHandles());
         //switch to open tab
         driver.switchTo().window(w.get(1));
         String title = driver.getTitle();
@@ -283,6 +272,5 @@ public class JUnit {
     @After
     public void closeBrowser(){
         driver.quit();
-        //driver.close();
     }
 }
