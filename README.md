@@ -1,6 +1,7 @@
 # Junit-Demo-Project
 
-A testing repository using Selenium to automate the Demo QA website(https://demoqa.com) and its suite of applications.
+A testing repository using Selenium and Junit to automate <a href="https://demoqa.com"> Demo QA</a> and its suite of applications.
+
 
 1. [Technology](#technology)
 2. [Prerequisites](#prerequisites)
